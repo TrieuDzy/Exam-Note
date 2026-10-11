@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f5f7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Exam Note">
+<title>Exam Note</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --text: #16181d;
+    --muted: #6b7280;
+    --line: #e4e6eb;
+    --accent: #2f6bff;
+    --accent-soft: #eef3ff;
+    --ok: #17864a;
+    --ok-soft: #eaf7f0;
+    --danger: #c0392b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 26px 16px calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .app-header h1 {
+    font-size: 22px;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+  }
+  .app-header p {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ---------- Warning banner ---------- */
+  .warn {
+    background: #fff4e5;
+    border: 1px solid #ffd9a8;
+    color: #8a5200;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: #e8eaee;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+  }
+  .tab {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 9px 12px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .12s, color .12s;
+  }
+  .tab.active {
+    background: #fff;
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .card p { margin: 0 0 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card h2 {
+    margin: 0 0 6px;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-label {
+    margin: 0 0 8px !important;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  /* ---------- Step 1: skill picker ---------- */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .skill-btn {
+    padding: 20px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .12s, background .12s, color .12s;
+  }
+  .skill-btn:hover,
+  .skill-btn:active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* ---------- Inputs ---------- */
+  .input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    font-size: 16px;
+    font-family: inherit;
+    background: #fff;
+    color: var(--text);
+    margin-top: 12px;
+    outline: none;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .chip {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--muted);
+    transition: border-color .12s, color .12s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- Buttons ---------- */
+  .row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .btn {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity .12s;
+  }
+  .btn:hover { opacity: .88; }
+  .btn.ghost {
+    background: #fff;
+    border-color: var(--line);
+    color: var(--text);
+    flex: 0 0 auto;
+  }
+  .btn.ghost:hover { background: #f7f8fa; opacity: 1; }
+  .btn.ghost.grow { flex: 1 1 0; }
+  .btn.small {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .seg {
+    display: inline-flex;
+    background: #e8eaee;
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .seg-btn {
+    border: 0;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .12s, color .12s;
+  }
+  .seg-btn.active {
+    background: #fff;
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+
+  /* ---------- Deck card ---------- */
+  .deck-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .deck-head h3 {
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .section-title {
+    margin: 0 0 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- Skill blocks with record history ---------- */
+  .skill-block {
+    padding: 10px 0;
+    border-bottom: 1px solid #f2f3f5;
+  }
+  .skill-block:last-child { border-bottom: 0; padding-bottom: 0; }
+  .skill-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .skill-block-head .skill-name {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .record-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-top: 6px;
+    background: #f8f9fb;
+    border-radius: 8px;
+  }
+  .record-main { flex: 1 1 auto; min-width: 0; }
+  .record-code {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+    word-break: break-word;
+  }
+  .record-date {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 1px;
+  }
+  .record-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 12px;
+    padding-top: 2px;
+  }
+  .none-yet {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .link {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--accent);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .link.danger { color: var(--danger); }
+  .link:hover { text-decoration: underline; }
+
+  /* ---------- Misc ---------- */
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 44px 20px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="app-header">
+    <h1>Exam Note</h1>
+    <p>Every test you have finished, kept forever</p>
+  </header>
+
+  <div id="storage-warning" class="warn hidden"></div>
+
+  <nav class="tabs">
+    <button class="tab active" data-act="tab" data-tab="add">Add Record</button>
+    <button class="tab" data-act="tab" data-tab="decks">My Decks</button>
+  </nav>
+
+  <main>
+    <section id="view-add" class="view"></section>
+    <section id="view-decks" class="view hidden"></section>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =========================================================
+     Data model (v2)
+
+     decks   : [{ number: "12" }]                       -> decks that exist
+     records : [{ id, deck, skill, code, at }]          -> EVERY test ever done
+                (nothing is ever overwritten; each save appends)
+     ========================================================= */
+
+  var STORAGE_KEY = 'examNote.v2';
+  var LEGACY_KEY  = 'examNote.v1';
+
+  var SKILLS = [
+    { key: 'listening', label: 'Listening' },
+    { key: 'speaking',  label: 'Speaking'  },
+    { key: 'reading',   label: 'Reading'   },
+    { key: 'writing',   label: 'Writing'   }
+  ];
+
+  var SKILL_LABEL = {};
+  SKILLS.forEach(function (s) { SKILL_LABEL[s.key] = s.label; });
+
+  var decks = [];
+  var records = [];
+  var sortMode = 'number';                 // 'number' | 'skill'
+  var wizard = { step: 1, skill: null, deckNumber: '', code: '' };
+  var storageOK = true;
+
+  /* =========================================================
+     Small helpers
+     ========================================================= */
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function genId() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
+  function normalize(str) {
+    return String(str === undefined || str === null ? '' : str).trim().toLowerCase();
+  }
+
+  function pad2(n) { return n < 10 ? '0' + n : String(n); }
+
+  function todayISO() { return new Date().toISOString(); }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  /* Decks are sorted LARGEST -> SMALLEST (e.g. 24, 18, 9, 3) */
+  function sortDecksDesc(list) {
+    return list.slice().sort(function (a, b) {
+      return String(b.number).localeCompare(String(a.number), undefined, {
+        numeric: true,
+        sensitivity: 'base'
+      });
+    });
+  }
+
+  /* Newest record first */
+  function byNewest(a, b) {
+    if (a.at === b.at) return 0;
+    return a.at > b.at ? -1 : 1;
+  }
+
+  function getDeck(number) {
+    var n = normalize(number);
+    for (var i = 0; i < decks.length; i++) {
+      if (normalize(decks[i].number) === n) return decks[i];
+    }
+    return null;
+  }
+
+  function ensureDeck(number) {
+    var num = String(number).trim();
+    var d = getDeck(num);
+    if (!d) {
+      d = { number: num };
+      decks.push(d);
+    }
+    return d;
+  }
+
+  function getRecords(deckNumber, skillKey) {
+    var n = normalize(deckNumber);
+    return records.filter(function (r) {
+      return r.skill === skillKey && normalize(r.deck) === n;
+    }).sort(byNewest);
+  }
+
+  function getRecordById(id) {
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].id === id) return records[i];
+    }
+    return null;
+  }
+
+  function countRecordsForDeck(deckNumber) {
+    var n = normalize(deckNumber);
+    return records.filter(function (r) { return normalize(r.deck) === n; }).length;
+  }
+
+  function addRecord(deckNumber, skillKey, code, at) {
+    ensureDeck(deckNumber);
+    var rec = {
+      id: genId(),
+      deck: String(deckNumber).trim(),
+      skill: skillKey,
+      code: code === undefined || code === null ? '' : String(code),
+      at: at || todayISO()
+    };
+    records.push(rec);
+    return rec;
+  }
+
+  /* =========================================================
+     Storage
+     ========================================================= */
+
+  function cleanDecks(list) {
+    var out = [];
+    var seen = {};
+    list.forEach(function (d) {
+      if (!d || d.number === undefined || d.number === null) return;
+      var num = String(d.number).trim();
+      if (!num) return;
+      var key = normalize(num);
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push({ number: num });
+    });
+    return out;
+  }
+
+  function cleanRecords(list) {
+    var out = [];
+    list.forEach(function (r) {
+      if (!r) return;
+      if (r.deck === undefined || r.deck === null) return;
+      var skill = String(r.skill || '');
+      if (!SKILL_LABEL[skill]) return;
+      var num = String(r.deck).trim();
+      if (!num) return;
+      out.push({
+        id: r.id ? String(r.id) : genId(),
+        deck: num,
+        skill: skill,
+        code: r.code === undefined || r.code === null ? '' : String(r.code),
+        at: r.at ? String(r.at) : todayISO()
+      });
+    });
+    return out;
+  }
+
+  function load() {
+    var raw = null;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (err) {
+      storageOK = false;
+    }
+
+    if (raw) {
+      try {
+        var data = JSON.parse(raw);
+        if (data) {
+          if (Array.isArray(data.decks)) decks = cleanDecks(data.decks);
+          if (Array.isArray(data.records)) records = cleanRecords(data.records);
+          /* every record must belong to a known deck */
+          records.forEach(function (r) { ensureDeck(r.deck); });
+        }
+        return;
+      } catch (err) {
+        console.warn('Saved data was unreadable, trying legacy format.', err);
+      }
+    }
+
+    /* ---- Migrate the old v1 format (one code per skill) ---- */
+    try {
+      var old = localStorage.getItem(LEGACY_KEY);
+      if (!old) return;
+      var legacy = JSON.parse(old);
+      if (!legacy || !Array.isArray(legacy.decks)) return;
+
+      legacy.decks.forEach(function (d) {
+        if (!d || d.number === undefined || d.number === null) return;
+        var num = String(d.number).trim();
+        if (!num) return;
+        ensureDeck(num);
+        if (d.skills && typeof d.skills === 'object') {
+          SKILLS.forEach(function (s) {
+            if (Object.prototype.hasOwnProperty.call(d.skills, s.key)) {
+              var v = d.skills[s.key];
+              addRecord(num, s.key, v === null || v === undefined ? '' : String(v), todayISO());
+            }
+          });
+        }
+      });
+      save();
+    } catch (err) {
+      console.warn('Could not migrate old data.', err);
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        version: 2,
+        savedAt: todayISO(),
+        decks: decks,
+        records: records
+      }));
+      storageOK = true;
+    } catch (err) {
+      storageOK = false;
+      console.warn('Could not save data.', err);
+      showStorageWarning();
+    }
+    return storageOK;
+  }
+
+  function showStorageWarning() {
+    var el = document.getElementById('storage-warning');
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.innerHTML =
+      '<strong>Storage unavailable.</strong> This browser is blocking local storage, so records ' +
+      'will disappear when you close the page. Do not use Private Browsing, and open the file ' +
+      'directly in Safari. Use <em>Export backup</em> in the My Decks tab to keep a copy.';
+  }
+
+  /* =========================================================
+     View: Add Record (wizard)
+     ========================================================= */
+
+  function renderAdd() {
+    var el = document.getElementById('view-add');
+    var step = wizard.step;
+
+    /* ---- Step 1: skill ---- */
+    if (step === 1) {
+      el.innerHTML =
+        '<div class="card">' +
+          '<p class="step-label">Step 1 of 3</p>' +
+          '<h2>What did you work on?</h2>' +
+          '<div class="skill-grid">' +
+            SKILLS.map(function (s) {
+              return '<button class="skill-btn" data-act="pick-skill" data-skill="' + s.key + '">' +
+                       s.label +
+                     '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+      return;
+    }
+
+    /* ---- Step 2: deck number ---- */
+    if (step === 2) {
+      var chips = sortDecksDesc(decks).map(function (d) {
+        return '<button class="chip" data-act="pick-deck" data-deck="' + escapeHtml(d.number) + '">' +
+                 escapeHtml(d.number) +
+               '</button>';
+      }).join('');
+
+      el.innerHTML =
+        '<div class="card">' +
+          '<p class="step-label">Step 2 of 3</p>' +
+          '<h2>Which deck number?</h2>' +
+          '<p class="muted small">' + escapeHtml(SKILL_LABEL[wizard.skill] || '') + '</p>' +
+          '<input id="deck-input" class="input" type="text" inputmode="numeric" ' +
+                 'autocomplete="off" placeholder="Enter deck number" ' +
+                 'value="' + escapeHtml(wizard.deckNumber) + '">' +
+          (chips ? '<div class="chips">' + chips + '</div>' : '') +
+          '<div class="row">' +
+            '<button class="btn ghost" data-act="wizard-back">Back</button>' +
+            '<button class="btn" data-act="wizard-next">Next</button>' +
+          '</div>' +
+        '</div>';
+
+      var deckInput = document.getElementById('deck-input');
+      deckInput.focus();
+      deckInput.select();
+      deckInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); wizardNext(); }
+      });
+      return;
+    }
+
+    /* ---- Step 3: test code ---- */
+    if (step === 3) {
+      el.innerHTML =
+        '<div class="card">' +
+          '<p class="step-label">Step 3 of 3</p>' +
+          '<h2>Test code for Deck ' + escapeHtml(wizard.deckNumber) + '</h2>' +
+          '<p class="muted small">' + escapeHtml(SKILL_LABEL[wizard.skill] || '') + '</p>' +
+          '<input id="code-input" class="input" type="text" autocomplete="off" ' +
+                 'placeholder="Enter test code (or leave blank)" value="' + escapeHtml(wizard.code) + '">' +
+          '<div class="row">' +
+            '<button class="btn ghost" data-act="wizard-back">Back</button>' +
+            '<button class="btn" data-act="wizard-save">Save</button>' +
+          '</div>' +
+        '</div>';
+
+      var codeInput = document.getElementById('code-input');
+      codeInput.focus();
+      codeInput.select();
+      codeInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); wizardSave(); }
+      });
+      return;
+    }
+
+    /* ---- Done ---- */
+    el.innerHTML =
+      '<div class="card">' +
+        '<p class="step-label">Saved</p>' +
+        '<h2>Record added</h2>' +
+        '<p class="muted">Deck ' + escapeHtml(wizard.deckNumber) + ' &middot; ' +
+          escapeHtml(SKILL_LABEL[wizard.skill] || '') + ' &middot; ' +
+          (wizard.code ? 'Code ' + escapeHtml(wizard.code) : 'No code') +
+        '</p>' +
+        '<p class="muted small">It was added to your history — the previous records for this deck are still there.</p>' +
+        '<div class="row">' +
+          '<button class="btn ghost" data-act="restart">Add another</button>' +
+          '<button class="btn" data-act="go-decks">View my decks</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function wizardNext() {
+    var input = document.getElementById('deck-input');
+    if (!input) return;
+    var val = input.value.trim();
+    if (!val) { input.focus(); return; }
+    wizard.deckNumber = val;
+    wizard.step = 3;
+    renderAdd();
+  }
+
+  function wizardSave() {
+    var input = document.getElementById('code-input');
+    if (!input) return;
+    var code = input.value.trim();
+
+    addRecord(wizard.deckNumber, wizard.skill, code);
+    wizard.code = code;
+    save();
+
+    wizard.step = 'done';
+    renderAdd();
+  }
+
+  /* =========================================================
+     View: My Decks
+     ========================================================= */
+
+  function renderDecks() {
+    var el = document.getElementById('view-decks');
+
+    if (decks.length === 0 && records.length === 0) {
+      el.innerHTML =
+        '<div class="card empty">' +
+          'No decks yet.<br>Go to <strong>Add Record</strong> to start tracking.' +
+        '</div>' + renderBackupCard();
+      return;
+    }
+
+    var sorted = sortDecksDesc(decks);
+    var body = (sortMode === 'number')
+      ? sorted.map(renderDeckCard).join('')
+      : renderSkillGroups();
+
+    el.innerHTML =
+      '<div class="toolbar">' +
+        '<div class="seg">' +
+          '<button class="seg-btn ' + (sortMode === 'number' ? 'active' : '') + '" ' +
+                  'data-act="sort" data-sort="number">By deck</button>' +
+          '<button class="seg-btn ' + (sortMode === 'skill' ? 'active' : '') + '" ' +
+                  'data-act="sort" data-sort="skill">By skill</button>' +
+        '</div>' +
+        '<button class="btn small" data-act="add-deck">Add deck</button>' +
+      '</div>' +
+      '<p class="muted small" style="margin:-6px 0 14px">' +
+        decks.length + ' deck' + (decks.length === 1 ? '' : 's') + ' &middot; ' +
+        records.length + ' record' + (records.length === 1 ? '' : 's') +
+        ' &middot; sorted largest deck first' +
+      '</p>' +
+      body +
+      renderBackupCard();
+  }
+
+  function renderDeckCard(deck) {
+    var num = deck.number;
+    var total = countRecordsForDeck(num);
+
+    var blocks = SKILLS.map(function (s) {
+      var list = getRecords(num, s.key);
+
+      var rows = list.map(function (r) {
+        return '<div class="record-row">' +
+                 '<span class="record-main">' +
+                   '<span class="record-code">' +
+                     (r.code ? 'Code ' + escapeHtml(r.code) : 'No code') +
+                   '</span>' +
+                   '<span class="record-date">' + escapeHtml(formatDate(r.at)) + '</span>' +
+                 '</span>' +
+                 '<span class="record-actions">' +
+                   '<button class="link" data-act="edit" data-id="' + escapeHtml(r.id) + '">Edit</button>' +
+                   '<button class="link danger" data-act="delete" data-id="' + escapeHtml(r.id) + '">Delete</button>' +
+                 '</span>' +
+               '</div>';
+      }).join('');
+
+      return '<div class="skill-block">' +
+               '<div class="skill-block-head">' +
+                 '<span class="skill-name">' + s.label +
+                   (list.length ? '<span class="badge">' + list.length + '</span>' : '') +
+                 '</span>' +
+                 '<button class="link" data-act="mark" ' +
+                         'data-deck="' + escapeHtml(num) + '" ' +
+                         'data-skill="' + s.key + '">+ Add</button>' +
+               '</div>' +
+               (rows || '<p class="none-yet">Not done yet.</p>') +
+             '</div>';
+    }).join('');
+
+    return '<div class="card">' +
+             '<div class="deck-head">' +
+               '<h3>Deck ' + escapeHtml(num) +
+                 (total ? ' <span class="badge">' + total + '</span>' : '') +
+               '</h3>' +
+               '<button class="link danger" data-act="remove-deck" ' +
+                       'data-deck="' + escapeHtml(num) + '">Remove</button>' +
+             '</div>' +
+             blocks +
+           '</div>';
+  }
+
+  function renderSkillGroups() {
+    return SKILLS.map(function (s) {
+      var list = records.filter(function (r) { return r.skill === s.key; });
+
+      /* deck largest -> smallest, then newest first */
+      list.sort(function (a, b) {
+        var c = String(b.deck).localeCompare(String(a.deck), undefined, {
+          numeric: true, sensitivity: 'base'
+        });
+        if (c !== 0) return c;
+        return byNewest(a, b);
+      });
+
+      var rows = list.map(function (r) {
+        return '<div class="record-row">' +
+                 '<span class="record-main">' +
+                   '<span class="record-code">Deck ' + escapeHtml(r.deck) + '</span>' +
+                   '<span class="record-date">' +
+                     (r.code ? 'Code ' + escapeHtml(r.code) + ' &middot; ' : '') +
+                     escapeHtml(formatDate(r.at)) +
+                   '</span>' +
+                 '</span>' +
+                 '<span class="record-actions">' +
+                   '<button class="link" data-act="edit" data-id="' + escapeHtml(r.id) + '">Edit</button>' +
+                   '<button class="link danger" data-act="delete" data-id="' + escapeHtml(r.id) + '">Delete</button>' +
+                 '</span>' +
+               '</div>';
+      }).join('');
+
+      return '<div class="card">' +
+               '<h3 class="section-title">' + s.label +
+                 (list.length ? '<span class="badge">' + list.length + '</span>' : '') +
+               '</h3>' +
+               (rows || '<p class="none-yet">Nothing recorded yet.</p>') +
+             '</div>';
+    }).join('');
+  }
+
+  function renderBackupCard() {
+    return '<div class="card">' +
+             '<h3 class="section-title">Backup &amp; restore</h3>' +
+             '<p class="muted small">Your records live in this browser on this device. ' +
+               'Deleting the app, clearing Safari website data, or using Private Browsing ' +
+               'will erase them. Export a backup file regularly and keep it in Files or iCloud.</p>' +
+             '<div class="row">' +
+               '<button class="btn ghost grow" data-act="export">Export backup</button>' +
+               '<button class="btn ghost grow" data-act="import">Import backup</button>' +
+             '</div>' +
+             '<input id="import-file" class="hidden" type="file" accept=".json,application/json">' +
+           '</div>';
+  }
+
+  /* =========================================================
+     Actions
+     ========================================================= */
+
+  function switchTab(tab) {
+    if (tab === 'add' && wizard.step === 'done') {
+      wizard = { step: 1, skill: null, deckNumber: '', code: '' };
+    }
+
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tab);
+    }
+
+    document.getElementById('view-add').classList.toggle('hidden', tab !== 'add');
+    document.getElementById('view-decks').classList.toggle('hidden', tab !== 'decks');
+
+    if (tab === 'add') renderAdd();
+    else renderDecks();
+  }
+
+  function addDeck() {
+    var val = window.prompt('Enter the new deck number:');
+    if (val === null) return;
+    var num = val.trim();
+    if (!num) return;
+    if (getDeck(num)) {
+      window.alert('That deck already exists.');
+      return;
+    }
+    ensureDeck(num);
+    save();
+    renderDecks();
+  }
+
+  function markDone(deckNumber, skillKey) {
+    var msg = 'New test code for Deck ' + deckNumber + ' - ' + SKILL_LABEL[skillKey] +
+              '\n(Leave blank if there is no code)';
+    var code = window.prompt(msg, '');
+    if (code === null) return;
+
+    addRecord(deckNumber, skillKey, code.trim());
+    if (!save()) {
+      window.alert('Saved for this session only — storage is blocked by the browser.');
+    }
+    renderDecks();
+  }
+
+  function editRecord(id) {
+    var rec = getRecordById(id);
+    if (!rec) return;
+    var msg = 'Test code for Deck ' + rec.deck + ' - ' + SKILL_LABEL[rec.skill] +
+              '\n(On ' + formatDate(rec.at) + ')';
+    var code = window.prompt(msg, rec.code);
+    if (code === null) return;
+    rec.code = code.trim();
+    save();
+    renderDecks();
+  }
+
+  function deleteRecord(id) {
+    var rec = getRecordById(id);
+    if (!rec) return;
+    var msg = 'Delete this record?\n\nDeck ' + rec.deck + ' - ' + SKILL_LABEL[rec.skill] +
+              '\n' + (rec.code ? 'Code ' + rec.code : 'No code') +
+              '\n' + formatDate(rec.at);
+    if (!window.confirm(msg)) return;
+    records = records.filter(function (r) { return r.id !== id; });
+    save();
+    renderDecks();
+  }
+
+  function removeDeck(deckNumber) {
+    var deck = getDeck(deckNumber);
+    if (!deck) return;
+    var count = countRecordsForDeck(deck.number);
+    var msg = 'Remove Deck ' + deck.number + ' and all ' + count +
+              ' record' + (count === 1 ? '' : 's') + ' in it?\n\nThis cannot be undone.';
+    if (!window.confirm(msg)) return;
+
+    decks = decks.filter(function (d) { return d !== deck; });
+    records = records.filter(function (r) {
+      return normalize(r.deck) !== normalize(deck.number);
+    });
+    save();
+    renderDecks();
+  }
+
+  /* ---- Backup ---- */
+
+  function exportBackup() {
+    var payload = {
+      app: 'Exam Note',
+      version: 2,
+      exportedAt: todayISO(),
+      decks: decks,
+      records: records
+    };
+
+    var text = JSON.stringify(payload, null, 2);
+    var name = 'exam-note-backup-' + formatDate(todayISO()) + '.json';
+
+    try {
+      var blob = new Blob([text], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    } catch (err) {
+      /* Fallback for browsers that block downloads */
+      window.prompt('Copy this text and save it somewhere safe:', text);
+    }
+  }
+
+  function requestImport() {
+    var input = document.getElementById('import-file');
+    if (input) input.click();
+  }
+
+  function handleImportFile(input) {
+    var file = input.files && input.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function () {
+      var data;
+      try {
+        data = JSON.parse(String(reader.result));
+      } catch (err) {
+        window.alert('That file could not be read as a backup.');
+        input.value = '';
+        return;
+      }
+
+      if (!data || (!Array.isArray(data.decks) && !Array.isArray(data.records))) {
+        window.alert('That file does not look like an Exam Note backup.');
+        input.value = '';
+        return;
+      }
+
+      var ok = window.confirm(
+        'Replace everything on this device with the imported backup?\n\n' +
+        'Tap Cancel to keep your current data untouched.'
+      );
+      if (!ok) { input.value = ''; return; }
+
+      decks = Array.isArray(data.decks) ? cleanDecks(data.decks) : [];
+      records = Array.isArray(data.records) ? cleanRecords(data.records) : [];
+      records.forEach(function (r) { ensureDeck(r.deck); });
+
+      save();
+      renderDecks();
+      window.alert('Backup imported: ' + records.length + ' record(s).');
+      input.value = '';
+    };
+
+    reader.onerror = function () {
+      window.alert('Could not open that file.');
+      input.value = '';
+    };
+
+    reader.readAsText(file);
+  }
+
+  /* =========================================================
+     Event delegation
+     ========================================================= */
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+
+    var act = btn.getAttribute('data-act');
+
+    switch (act) {
+      case 'tab':
+        switchTab(btn.getAttribute('data-tab'));
+        break;
+
+      case 'pick-skill':
+        wizard.skill = btn.getAttribute('data-skill');
+        wizard.step = 2;
+        renderAdd();
+        break;
+
+      case 'pick-deck':
+        var di = document.getElementById('deck-input');
+        if (di) { di.value = btn.getAttribute('data-deck'); di.focus(); }
+        break;
+
+      case 'wizard-back':
+        wizard.step = (wizard.step === 3) ? 2 : 1;
+        renderAdd();
+        break;
+
+      case 'wizard-next':
+        wizardNext();
+        break;
+
+      case 'wizard-save':
+        wizardSave();
+        break;
+
+      case 'restart':
+        wizard = { step: 1, skill: null, deckNumber: '', code: '' };
+        renderAdd();
+        break;
+
+      case 'go-decks':
+        switchTab('decks');
+        break;
+
+      case 'sort':
+        sortMode = btn.getAttribute('data-sort');
+        renderDecks();
+        break;
+
+      case 'add-deck':
+        addDeck();
+        break;
+
+      case 'mark':
+        markDone(btn.getAttribute('data-deck'), btn.getAttribute('data-skill'));
+        break;
+
+      case 'edit':
+        editRecord(btn.getAttribute('data-id'));
+        break;
+
+      case 'delete':
+        deleteRecord(btn.getAttribute('data-id'));
+        break;
+
+      case 'remove-deck':
+        removeDeck(btn.getAttribute('data-deck'));
+        break;
+
+      case 'export':
+        exportBackup();
+        break;
+
+      case 'import':
+        requestImport();
+        break;
+    }
+  });
+
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.id === 'import-file') {
+      handleImportFile(e.target);
+    }
+  });
+
+  /* =========================================================
+     Init
+     ========================================================= */
+
+  load();
+  if (!storageOK) showStorageWarning();
+  switchTab('add');
+
+})();
+</script>
+</body>
+</html>
